@@ -11,11 +11,10 @@ const talkead = async () => {
   return result;
 };
 
-// console.log(token);
 const app = express();
 
 app.use(bodyParser.json());
-// app.use(express.json());
+
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 const { getAllTalkers, getTalkerID, validEmail, validPassword, validToken,
@@ -33,9 +32,17 @@ app.get('/', (_request, response) => {
 
 app.get('/talker', getAllTalkers);
 
-// req - 2
-
-app.get('/talker/:id', getTalkerID);
+// req 7 
+app.get('/talker/search', validToken, async (req, res) => {
+  const { q } = req.query;
+  const newQ = q.toLowerCase();
+  const talk = await talkead();
+  const filterName = talk.filter((r) => r.name.toLowerCase().includes(newQ));
+  if (!q) {
+    return res.status(200).json(filterName);
+  }
+  return res.status(200).json(filterName);
+});
 
 // req - 3
 
@@ -63,10 +70,13 @@ validRate,
       rate,
     },
  };
-   fs.writeFile('./talker.json', JSON.stringify([...oldTalk, result]));
-
-  return res.status(201).json(result);
+ await fs.writeFile('./talker.json', JSON.stringify([...oldTalk, result]));
+ 
+ return res.status(201).json(result);
 });
+// req - 2
+
+app.get('/talker/:id', getTalkerID);
 
 // req - 5 
 app.put('/talker/:id',
@@ -89,10 +99,6 @@ async (req, res) => {
   return res.status(200).json(obj);
 });
 
-app.listen(PORT, () => {
-  console.log('Online');
-});
-
 // req 6 
 app.delete('/talker/:id', validToken, async (req, res) => {
   const { id } = req.params;
@@ -103,3 +109,7 @@ app.delete('/talker/:id', validToken, async (req, res) => {
   return res.status(200).json({ message: 'Pessoa palestrante deletada com sucesso' });
 });
 // Agradecimentos A Jefferson Andrade Turma 10 - Tribo B 
+
+app.listen(PORT, () => {
+  console.log('Online');
+});
