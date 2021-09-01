@@ -87,22 +87,6 @@ const validTalk = (req, res, next) => {
   next();
 };
 
-const validTalk2 = (req, res, next) => {
-  const { talk } = req.body;
-
-  if (!talk || !talk.watchedAt) {
-    return res
-    .status(error400)
-    .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
-   }
-
-  if (!talk.rate) {
-     return res
-     .status(error400)
-     .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
-    }
-  next();
-};
 const validRate = (req, res, next) => {
   const { rate } = req.body.talk;
   if (rate === undefined) {
@@ -138,7 +122,6 @@ validAge,
 validTalk,
 validRate,
 validWatchedAt,
-validTalk2,
 };
 
 // Agradecimentos A https://www.guj.com.br/t/resolvido-como-validar-data-com-java-script/276656
