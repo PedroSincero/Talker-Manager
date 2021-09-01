@@ -7,11 +7,11 @@ const { token } = require('./token.js');
 const talkead = async () => {
   const talkers = './talker.json';
   const getTalker = await fs.readFile(talkers);
-  const result = await JSON.parse(getTalker);
+  const result = JSON.parse(getTalker);
   return result;
 };
 
-console.log(token);
+// console.log(token);
 const app = express();
 
 app.use(bodyParser.json());
