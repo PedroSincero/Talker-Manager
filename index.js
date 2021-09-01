@@ -7,7 +7,7 @@ const { token } = require('./token.js');
 const talkead = async () => {
   const talkers = './talker.json';
   const getTalker = await fs.readFile(talkers);
-  const result = JSON.parse(getTalker);
+  const result = await JSON.parse(getTalker);
   return result;
 };
 
@@ -47,9 +47,9 @@ app.post('/talker',
 validToken,
 validName,
 validAge,
-validRate,
 validTalk,
 validWatchedAt,
+validRate,
   async (req, res) => {
    const { name, age, talk: { watchedAt, rate } } = req.body;
    const oldTalk = await talkead();
