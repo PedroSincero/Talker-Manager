@@ -93,4 +93,13 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+// req 6 
+app.delete('/talker/:id', validToken, async (req, res) => {
+  const { id } = req.params;
+  const oldTalk = await talkead();
+  const index = oldTalk.findIndex((r) => r.id === Number(id));
+  oldTalk.splice(index, 1);
+  fs.writeFile('talker.json', JSON.stringify(oldTalk));
+  return res.status(200).json({ message: 'Pessoa palestrante deletada com sucesso' });
+});
 // Agradecimentos A Jefferson Andrade Turma 10 - Tribo B 
