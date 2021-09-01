@@ -84,7 +84,7 @@ async (req, res) => {
   const index = oldTalk.findIndex((r) => r.id === Number(id));
 
   const obj = { ...oldTalk[index], name, age, talk: { watchedAt, rate } };
-  fs.writeFile('./talker.json', JSON.stringify([obj]));
+  await fs.writeFile('./talker.json', JSON.stringify([obj]));
 
   return res.status(200).json(obj);
 });
