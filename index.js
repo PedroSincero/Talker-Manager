@@ -5,17 +5,17 @@ const fs = require('fs').promises;
 const { token } = require('./token.js');
 
 const talkead = async () => {
-const talkers = './talker.json';
-const getTalker = await fs.readFile(talkers);
-const result = JSON.parse(getTalker);
-return result;
+  const talkers = './talker.json';
+  const getTalker = await fs.readFile(talkers);
+  const result = await JSON.parse(getTalker);
+  return result;
 };
 
 console.log(token);
 const app = express();
 
 app.use(bodyParser.json());
-
+// app.use(express.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 const { getAllTalkers, getTalkerID, validEmail, validPassword, validToken,
@@ -42,18 +42,18 @@ app.get('/talker/:id', getTalkerID);
 app.post('/login', validEmail, validPassword, (_req, res) => res.status(200).json({ token }));
 
 // req - 4
-// readfile readright
+
 app.post('/talker',
 validToken,
 validName,
 validAge,
-validTalk,
 validRate,
+validTalk,
 validWatchedAt,
   async (req, res) => {
    const { name, age, talk: { watchedAt, rate } } = req.body;
    const oldTalk = await talkead();
-   console.log('oldTalk', oldTalk);
+   
    const result = {
     name,
     age,
@@ -66,6 +66,27 @@ validWatchedAt,
    fs.writeFile('./talker.json', JSON.stringify([...oldTalk, result]));
 
   return res.status(201).json(result);
+});
+
+// req - 5 
+app.put('/talker/:id',
+validToken,
+validName,
+validAge,
+validTalk,
+validWatchedAt,
+validRate,
+async (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+
+  const oldTalk = await talkead();
+  const index = oldTalk.findIndex((r) => r.id === Number(id));
+
+  const obj = { ...oldTalk[index], name, age, talk: { watchedAt, rate } };
+  fs.writeFile('./talker.json', JSON.stringify([obj]));
+
+  return res.status(200).json(obj);
 });
 
 app.listen(PORT, () => {

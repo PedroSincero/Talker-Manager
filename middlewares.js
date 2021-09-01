@@ -79,22 +79,21 @@ const validAge = (req, res, next) => {
 const validTalk = (req, res, next) => {
   const { talk } = req.body;
 
-  if (!talk || !talk.watchedAt) {
+  if (!talk || !talk.watchedAt || talk.rate === undefined) {
     return res
     .status(error400)
     .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
    }
-
-  if (!talk.rate) {
-     return res
-     .status(error400)
-     .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
-    }
   next();
 };
 
 const validRate = (req, res, next) => {
   const { rate } = req.body.talk;
+  if (rate === undefined) {
+    return res.status(error400)
+    .json({ message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios' });
+  }
+  
   if (Number(rate) < 1 || Number(rate) > 5) {
     return res.status(error400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }
